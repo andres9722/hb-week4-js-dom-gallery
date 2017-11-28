@@ -1,0 +1,12 @@
+.header {
+  text-align: center;
+  border-bottom: .5px solid $border-color;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: $secondary-color;
+  color: $white;
+  text-shadow: 1px 0 2px $black;
+  z-index: 10;
+}

@@ -1,0 +1,74 @@
+@import url("https://fonts.googleapis.com/css?family=Poppins");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:700");
+*,:after,:before{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  line-height:1.6;
+  font-family:Poppins,sans-serif;
+  background-color:#fcfcfc;
+  color:#53575a;
+  padding-top:51px;
+}
+
+h1,h2,h3,h4,h5,h6{
+  font-family:Open Sans,sans-serif;
+  margin:0;
+}
+
+p{
+  margin:0;
+}
+
+img{
+  max-width:100%;
+  width:100%;
+  display:block;
+}
+
+.header{
+  text-align:center;
+  border-bottom:.5px solid #dfe0e0;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  background-color:#1190c5;
+  color:#fff;
+  text-shadow:1px 0 2px #282d31;
+  z-index:1;
+}
+
+.heroes-container{
+  text-align:center;
+  padding:.5em;
+}
+
+.heroes-container .hero{
+  position:relative;
+  margin-bottom:2em;
+}
+
+.heroes-container .hero-name{
+  font-size:1.2em;
+  top:0;
+}
+
+.heroes-container .hero-description,.heroes-container .hero-name{
+  position:absolute;
+  left:50%;
+  width:100%;
+  -webkit-transform:translate(-50%);
+          transform:translate(-50%);
+  background:rgba(40,45,49,.8);
+  color:#fff;
+  border-bottom:2px solid #1190c5;
+}
+
+.heroes-container .hero-description{
+  bottom:0;
+}
+
+/*# sourceMappingURL=styles.css.map */
