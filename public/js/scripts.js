@@ -3,9 +3,129 @@
 
 var _marvelApi = require("./modules/marvel-api");
 
+var _gallery = require("./modules/gallery");
+
 (0, _marvelApi.getConnection)();
 
-},{"./modules/marvel-api":2}],2:[function(require,module,exports){
+(0, _gallery.getImages)();
+
+},{"./modules/gallery":2,"./modules/marvel-api":3}],2:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+var getImages = exports.getImages = function getImages() {
+  var d = document,
+      c = console.log;
+
+  var getImagesScript = setInterval(function () {
+    if (d.readyState == 'complete') {
+      clearInterval(getImagesScript);
+
+      var _getImages = function _getImages(container) {
+        return [].concat(_toConsumableArray(container.querySelectorAll('img')));
+      };
+
+      var getLargeImages = function getLargeImages(gallery) {
+        return gallery.map(function (el) {
+          return el.src;
+        });
+      };
+
+      var getDescriptions = function getDescriptions(gallery) {
+        return gallery.map(function (el) {
+          return el.alt;
+        });
+      };
+
+      var OpenLightBoxEvent = function OpenLightBoxEvent(container, gallery, larges, descriptions) {
+        container.addEventListener('click', function (e) {
+          var el = e.target,
+              i = gallery.indexOf(el);
+
+          if (el.tagName === 'IMG') {
+            openLightBox(gallery, i, larges, descriptions);
+          }
+        });
+      };
+
+      var openLightBox = function openLightBox(gallery, i, larges, descriptions) {
+        var lightboxEl = d.createElement('div');
+
+        var lightBoxContent = '\n          <div class="lightbox-overlay">\n            <figure class="lightbox-container">\n              <div class="close-modal"></div>\n              <img src="' + larges[i] + '" class="lightbox-image">\n              <figcaption>\n                <p class="lightbox-description">' + descriptions[i] + '</p>\n              <figcaption>\n              <nav class="class="lightbox-navigation"">\n                <a href="" class="lightbox-navigation__button prev"></a>\n                <span class="lightbox-navigation__counter">Imagen ' + (i + 1) + ' de ' + larges.length + ' </span>\n                <a href="" class="lightbox-navigation__button next"></a>\n              </nav>\n            </figure>\n          </div>\n        ';
+
+        lightboxEl.innerHTML = lightBoxContent;
+
+        lightboxEl.id = 'lightbox';
+
+        d.body.appendChild(lightboxEl);
+
+        closeModal(lightboxEl);
+
+        navigateLightBox(lightboxEl, i, larges, descriptions);
+      };
+
+      var closeModal = function closeModal(modalEl) {
+        var closeModal = modalEl.querySelector('.close-modal');
+
+        closeModal.addEventListener('click', function (e) {
+          e.preventDefault();
+          d.body.removeChild(modalEl);
+        });
+      };
+
+      var navigateLightBox = function navigateLightBox(lightboxEl, i, larges, descriptions) {
+        var prev = lightboxEl.querySelector('.prev'),
+            next = lightboxEl.querySelector('.next'),
+            image = lightboxEl.querySelector('img'),
+            description = lightboxEl.querySelector('p'),
+            counter = lightboxEl.querySelector('span');
+
+        lightboxEl.addEventListener('click', function (e) {
+          e.preventDefault();
+          var target = e.target;
+
+          if (target === prev) {
+            if (i > 0) {
+              image.src = larges[i - 1];
+              i--;
+            } else {
+              image.src = larges[larges.length - 1];
+              i = larges.length - 1;
+            }
+          } else if (target === next) {
+            if (i < larges.length - 1) {
+              image.src = larges[i + 1];
+              i++;
+            } else {
+              image.src = larges[0];
+              i = 0;
+            }
+          }
+
+          description.textContent = descriptions[i];
+          counter.textContent = 'Imagen ' + (i + 1) + ' de ' + larges.length;
+        });
+      };
+
+      var lightbox = function lightbox(container) {
+        var images = _getImages(container),
+            larges = getLargeImages(images),
+            descriptions = getDescriptions(images);
+
+        OpenLightBoxEvent(container, images, larges, descriptions);
+      };
+
+      lightbox(d.querySelector('.heroes-container'));
+    }
+  }, 1000);
+};
+
+},{}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -19,35 +139,44 @@ var _md2 = _interopRequireDefault(_md);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var publicKey = 'c443fa04e8c144e8f8a0ffd67a580fe4',
-    privateKey = '884764bc040025c43308aa4e9c3f8f508906f903',
-    content = document.querySelector('section.heroes-container');
-
 var getConnection = exports.getConnection = function getConnection() {
-  var ts = Date.now(),
-      hash = (0, _md2.default)(ts + privateKey + publicKey),
-      URL = 'http://gateway.marvel.com/v1/public/characters?ts=' + ts + '&apikey=' + publicKey + '&hash=' + hash;
+  var d = document,
+      c = console.log;
 
-  fetch(URL).then(function (res) {
-    return res.json();
-  }).then(function (res) {
-    res.data.results.forEach(function (e) {
-      drawHero(e);
-    });
-  }).catch(function (err) {
-    return console.log(err);
-  });
+  var getConnectionScript = setInterval(function () {
+    if (d.readyState == 'complete') {
+      clearInterval(getConnectionScript);
+
+      var publicKey = 'c443fa04e8c144e8f8a0ffd67a580fe4',
+          privateKey = '884764bc040025c43308aa4e9c3f8f508906f903',
+          content = document.querySelector('section.heroes-container');
+
+      var ts = Date.now(),
+          hash = (0, _md2.default)(ts + privateKey + publicKey),
+          URL = 'http://gateway.marvel.com/v1/public/characters?ts=' + ts + '&apikey=' + publicKey + '&hash=' + hash;
+
+      fetch(URL).then(function (res) {
+        return res.json();
+      }).then(function (res) {
+        res.data.results.forEach(function (e) {
+          drawHero(e);
+        });
+      }).catch(function (err) {
+        return console.log(err);
+      });
+
+      var drawHero = function drawHero(e) {
+        var image = e.thumbnail.path + '/portrait_uncanny.' + e.thumbnail.extension;
+
+        var hero = '\n            <div class="hero">\n              <h3 class="hero-name">' + e.name + '</h3>\n              <img class="hero-image" src="' + image + '" alt="' + e.name + '">\n              <p class="hero-description">' + e.description + '</p>\n            </div>\n          ';
+
+        content.insertAdjacentHTML('beforeEnd', hero);
+      };
+    }
+  }, 10);
 };
 
-var drawHero = function drawHero(e) {
-  var image = e.thumbnail.path + '/portrait_uncanny.' + e.thumbnail.extension;
-
-  var hero = '\n    <div class="hero">\n      <h3 class="hero-name">' + e.name + '</h3>\n      <img class="hero-image" src="' + image + '">\n      <p class="hero-description">' + e.description + '</p>\n    </div>\n  ';
-
-  content.insertAdjacentHTML('beforeEnd', hero);
-};
-
-},{"md5":6}],3:[function(require,module,exports){
+},{"md5":7}],4:[function(require,module,exports){
 var charenc = {
   // UTF-8 encoding
   utf8: {
@@ -82,7 +211,7 @@ var charenc = {
 
 module.exports = charenc;
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 (function() {
   var base64map
       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
@@ -180,7 +309,7 @@ module.exports = charenc;
   module.exports = crypt;
 })();
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -203,7 +332,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 (function(){
   var crypt = require('crypt'),
       utf8 = require('charenc').utf8,
@@ -365,6 +494,6 @@ function isSlowBuffer (obj) {
 
 })();
 
-},{"charenc":3,"crypt":4,"is-buffer":5}]},{},[1]);
+},{"charenc":4,"crypt":5,"is-buffer":6}]},{},[1]);
 
 //# sourceMappingURL=scripts.js.map
