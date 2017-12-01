@@ -1,9 +1,6 @@
-import { encode } from "punycode";
-import md5 from 'md5'
-
 export const getImages = () => {
   const d = document, c = console.log
-  
+
   const getImagesScript = setInterval(() => {
     if(d.readyState == 'complete') {
       clearInterval(getImagesScript)
@@ -98,12 +95,11 @@ export const getImages = () => {
             } else {
               image.src = larges[0]
               i = 0
-            }          
+            }
           }
 
           description.textContent = descriptions[i]
           counter.textContent = `Imagen ${i+1} de ${larges.length}`
-          
         })
       }
 

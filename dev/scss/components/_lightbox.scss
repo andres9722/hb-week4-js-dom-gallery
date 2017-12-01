@@ -24,6 +24,22 @@
   display: flex;
   flex-direction: column;
   position: relative;
+
+
+  @include from($max-width) {
+    width: 33%;
+    margin: 0 auto;
+    height: 90%;
+  }
+}
+
+.lightbox-description {
+  color: $principal-color;
+  font-weight: 600;
+}
+
+.lightbox-navigation__counter {
+  font-size: .8em;
 }
 
 
