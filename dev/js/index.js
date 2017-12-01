@@ -1,8 +1,11 @@
 import { getConnection } from "./modules/marvel-api";
-import { getImages } from "./modules/gallery";
+
+import { Lightbox } from './modules/gallery-poo'
 
 getConnection()
 
-getImages()
+
+
+
 
 

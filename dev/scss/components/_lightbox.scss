@@ -1,47 +1,66 @@
 .lightbox {
   width: 100%;
   height: 100vh;
-}
 
-.lightbox-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100vh;
-  background: rgba(black, .9);
-  z-index: 20;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+  &-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(black, .9);
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    animation: overlay 3s infinite linear alternate;
+    transition: all .2s ease;
 
-.lightbox-container {
-  text-align: center;
-  background: $white;
-  padding: 0.2em;
-  border-radius: 5px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+    &.animationl {
+      transform: perspective(500px) rotateX(.5deg) rotateY(.5deg);
+    }
 
+    &.animationr {
+      transform: perspective(500px) rotateX(-.5deg) rotateY(-.5deg);
+    }
 
-  @include from($max-width) {
-    width: 33%;
-    margin: 0 auto;
-    height: 90%;
+    @keyframes overlay {
+      from {
+        background: rgba(black, .95);
+      }
+      to {
+        background: rgba(black, .8);
+      }
+    }
   }
-}
 
-.lightbox-description {
-  color: $principal-color;
-  font-weight: 600;
-}
+  &-container {
+    text-align: center;
+    background: $white;
+    padding: 0.2em;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  
+  
+    @include from($max-width) {
+      width: 33%;
+      margin: 0 auto;
+      height: 90%;
+    }
+  }
 
-.lightbox-navigation__counter {
-  font-size: .8em;
-}
+  &-description {
+    color: $principal-color;
+    font-weight: 600;
+  }
 
+  &-navigation__counter {
+    font-size: .8em;
+  }
+
+}
 
 .next {
   position: absolute;
@@ -95,6 +114,10 @@
       border-radius: 50%;
       border: 2px solid $black;
     }
+
+  @include from($max-width) {
+    cursor: pointer;
+  }
 }
 
 

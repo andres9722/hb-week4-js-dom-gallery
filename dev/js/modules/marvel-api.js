@@ -1,4 +1,6 @@
 import md5 from 'md5'
+import { getImages } from "./gallery";
+import { Lightbox } from './gallery-poo'
 
 export const getConnection = () => {
   const d = document, c = console.log,
@@ -15,13 +17,15 @@ export const getConnection = () => {
     .then(res => res.json())
     .then(res => {
       res.data.results.forEach(e => {
-        drawHero(e)
+        drawHero(e) 
       })
+      getImages()
+      //const gallery = new Lightbox(document.querySelector('.heroes-container'))
     })
     .catch(err => console.log(err))
 
   const drawHero = e => {
-    const image = `${e.thumbnail.path}/portrait_uncanny.${e.thumbnail.extension}`
+    const image = `${e.thumbnail.path}/portrait_incredible.${e.thumbnail.extension}`
   
     const hero = `
       <div class="hero">

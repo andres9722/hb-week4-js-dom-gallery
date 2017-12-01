@@ -3,13 +3,147 @@
 
 var _marvelApi = require("./modules/marvel-api");
 
-var _gallery = require("./modules/gallery");
+var _galleryPoo = require("./modules/gallery-poo");
 
 (0, _marvelApi.getConnection)();
 
-(0, _gallery.getImages)();
+},{"./modules/gallery-poo":2,"./modules/marvel-api":4}],2:[function(require,module,exports){
+'use strict';
 
-},{"./modules/gallery":2,"./modules/marvel-api":3}],2:[function(require,module,exports){
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Lightbox = exports.Lightbox = function () {
+  function Lightbox(container) {
+    _classCallCheck(this, Lightbox);
+
+    this.container = container, this.lightbox(container);
+  }
+
+  _createClass(Lightbox, [{
+    key: 'lightbox',
+    value: function lightbox(container) {
+      var images = this.getImages(container),
+          larges = this.getLargeImages(images),
+          descriptions = this.getDescriptions(images);
+
+      this.openLightBoxEvent(container, images, larges, descriptions);
+    }
+  }, {
+    key: 'getImages',
+    value: function getImages(container) {
+      return [].concat(_toConsumableArray(container.querySelectorAll('img')));
+    }
+  }, {
+    key: 'getLargeImages',
+    value: function getLargeImages(gallery) {
+      return gallery.map(function (el) {
+        return el.src;
+      });
+    }
+  }, {
+    key: 'getDescriptions',
+    value: function getDescriptions(gallery) {
+      return gallery.map(function (el) {
+        return el.alt;
+      });
+    }
+  }, {
+    key: 'openLightBoxEvent',
+    value: function openLightBoxEvent(container, gallery, larges, descriptions) {
+      var _this = this;
+
+      container.addEventListener('click', function (e) {
+        var el = e.target,
+            i = gallery.indexOf(el);
+
+        if (el.tagName === 'IMG') {
+          _this.openLightBox(gallery, i, larges, descriptions);
+        }
+      });
+    }
+  }, {
+    key: 'openLightBox',
+    value: function openLightBox(gallery, i, larges, descriptions) {
+      var lightboxEl = document.createElement('div');
+
+      var lightBoxContent = '\n      <div class="lightbox-overlay">\n        <figure class="lightbox-container">\n          <div class="close-modal"></div>\n          <img src="' + larges[i] + '" class="lightbox-image">\n          <figcaption>\n            <p class="lightbox-description">' + descriptions[i] + '</p>\n          <figcaption>\n          <nav class="class="lightbox-navigation"">\n            <a href="" class="lightbox-navigation__button prev"></a>\n            <span class="lightbox-navigation__counter">Imagen ' + (i + 1) + ' de ' + larges.length + ' </span>\n            <a href="" class="lightbox-navigation__button next"></a>\n          </nav>\n        </figure>\n      </div>\n    ';
+
+      lightboxEl.innerHTML = lightBoxContent;
+
+      lightboxEl.id = 'lightbox';
+
+      document.body.appendChild(lightboxEl);
+
+      this.closeModal(lightboxEl);
+
+      this.navigateLightBox(lightboxEl, i, larges, descriptions);
+    }
+  }, {
+    key: 'closeModal',
+    value: function closeModal(modalEl) {
+      var closeModal = modalEl.querySelector('.close-modal');
+
+      closeModal.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.body.removeChild(modalEl);
+      });
+    }
+  }, {
+    key: 'navigateLightBox',
+    value: function navigateLightBox(lightboxEl, i, larges, descriptions) {
+      var prev = lightboxEl.querySelector('.prev'),
+          next = lightboxEl.querySelector('.next'),
+          image = lightboxEl.querySelector('img'),
+          description = lightboxEl.querySelector('p'),
+          counter = lightboxEl.querySelector('span'),
+          close = lightboxEl.querySelector('.close-modal');
+
+      window.addEventListener('keyup', function (e) {
+        if (e.key === 'ArrowRight') next.click();
+        if (e.key === 'ArrowLeft') prev.click();
+        if (e.key === 'Escape') close.click();
+      });
+
+      lightboxEl.addEventListener('click', function (e) {
+        e.preventDefault();
+        var target = e.target;
+
+        if (target === prev) {
+          if (i > 0) {
+            image.src = larges[i - 1];
+            i--;
+          } else {
+            image.src = larges[larges.length - 1];
+            i = larges.length - 1;
+          }
+        } else if (target === next) {
+          if (i < larges.length - 1) {
+            image.src = larges[i + 1];
+            i++;
+          } else {
+            image.src = larges[0];
+            i = 0;
+          }
+        }
+
+        description.textContent = descriptions[i];
+        counter.textContent = 'Imagen ' + (i + 1) + ' de ' + larges.length;
+      });
+    }
+  }]);
+
+  return Lightbox;
+}();
+
+},{}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -22,117 +156,111 @@ var getImages = exports.getImages = function getImages() {
   var d = document,
       c = console.log;
 
-  var getImagesScript = setInterval(function () {
-    if (d.readyState == 'complete') {
-      clearInterval(getImagesScript);
+  var getImages = function getImages(container) {
+    return [].concat(_toConsumableArray(container.querySelectorAll('img')));
+  };
 
-      var _getImages = function _getImages(container) {
-        return [].concat(_toConsumableArray(container.querySelectorAll('img')));
-      };
+  var getLargeImages = function getLargeImages(gallery) {
+    return gallery.map(function (el) {
+      return el.src;
+    });
+  };
 
-      var getLargeImages = function getLargeImages(gallery) {
-        return gallery.map(function (el) {
-          return el.src;
-        });
-      };
+  var getDescriptions = function getDescriptions(gallery) {
+    return gallery.map(function (el) {
+      return el.alt;
+    });
+  };
 
-      var getDescriptions = function getDescriptions(gallery) {
-        return gallery.map(function (el) {
-          return el.alt;
-        });
-      };
+  var OpenLightBoxEvent = function OpenLightBoxEvent(container, gallery, larges, descriptions) {
+    container.addEventListener('click', function (e) {
+      var el = e.target,
+          i = gallery.indexOf(el);
 
-      var OpenLightBoxEvent = function OpenLightBoxEvent(container, gallery, larges, descriptions) {
-        container.addEventListener('click', function (e) {
-          var el = e.target,
-              i = gallery.indexOf(el);
+      if (el.tagName === 'IMG') {
+        openLightBox(gallery, i, larges, descriptions);
+      }
+    });
+  };
 
-          if (el.tagName === 'IMG') {
-            openLightBox(gallery, i, larges, descriptions);
-          }
-        });
-      };
+  var openLightBox = function openLightBox(gallery, i, larges, descriptions) {
+    var lightboxEl = d.createElement('div');
 
-      var openLightBox = function openLightBox(gallery, i, larges, descriptions) {
-        var lightboxEl = d.createElement('div');
+    var lightBoxContent = '\n        <div class="lightbox-overlay">\n          <figure class="lightbox-container">\n            <div class="close-modal"></div>\n            <img src="' + larges[i] + '" class="lightbox-image">\n            <figcaption>\n              <p class="lightbox-description">' + descriptions[i] + '</p>\n            <figcaption>\n            <nav class="class="lightbox-navigation"">\n              <a href="" class="lightbox-navigation__button prev"></a>\n              <span class="lightbox-navigation__counter">Imagen ' + (i + 1) + ' de ' + larges.length + ' </span>\n              <a href="" class="lightbox-navigation__button next"></a>\n            </nav>\n          </figure>\n        </div>\n      ';
 
-        var lightBoxContent = '\n          <div class="lightbox-overlay">\n            <figure class="lightbox-container">\n              <div class="close-modal"></div>\n              <img src="' + larges[i] + '" class="lightbox-image">\n              <figcaption>\n                <p class="lightbox-description">' + descriptions[i] + '</p>\n              <figcaption>\n              <nav class="class="lightbox-navigation"">\n                <a href="" class="lightbox-navigation__button prev"></a>\n                <span class="lightbox-navigation__counter">Imagen ' + (i + 1) + ' de ' + larges.length + ' </span>\n                <a href="" class="lightbox-navigation__button next"></a>\n              </nav>\n            </figure>\n          </div>\n        ';
+    lightboxEl.innerHTML = lightBoxContent;
 
-        lightboxEl.innerHTML = lightBoxContent;
+    lightboxEl.id = 'lightbox';
 
-        lightboxEl.id = 'lightbox';
+    d.body.appendChild(lightboxEl);
 
-        d.body.appendChild(lightboxEl);
+    closeModal(lightboxEl);
 
-        closeModal(lightboxEl);
+    navigateLightBox(lightboxEl, i, larges, descriptions);
+  };
 
-        navigateLightBox(lightboxEl, i, larges, descriptions);
-      };
+  var closeModal = function closeModal(modalEl) {
+    var closeModal = modalEl.querySelector('.close-modal');
 
-      var closeModal = function closeModal(modalEl) {
-        var closeModal = modalEl.querySelector('.close-modal');
+    closeModal.addEventListener('click', function (e) {
+      e.preventDefault();
+      d.body.removeChild(modalEl);
+    });
+  };
 
-        closeModal.addEventListener('click', function (e) {
-          e.preventDefault();
-          d.body.removeChild(modalEl);
-        });
-      };
+  var navigateLightBox = function navigateLightBox(lightboxEl, i, larges, descriptions) {
+    var prev = lightboxEl.querySelector('.prev'),
+        next = lightboxEl.querySelector('.next'),
+        image = lightboxEl.querySelector('img'),
+        description = lightboxEl.querySelector('p'),
+        counter = lightboxEl.querySelector('span'),
+        close = lightboxEl.querySelector('.close-modal');
 
-      var navigateLightBox = function navigateLightBox(lightboxEl, i, larges, descriptions) {
-        var prev = lightboxEl.querySelector('.prev'),
-            next = lightboxEl.querySelector('.next'),
-            image = lightboxEl.querySelector('img'),
-            description = lightboxEl.querySelector('p'),
-            counter = lightboxEl.querySelector('span'),
-            close = lightboxEl.querySelector('.close-modal');
+    window.addEventListener('keyup', function (e) {
+      if (e.key === 'ArrowRight') next.click();
+      if (e.key === 'ArrowLeft') prev.click();
+      if (e.key === 'Escape') close.click();
+    });
 
-        window.addEventListener('keyup', function (e) {
-          if (e.key === 'ArrowRight') next.click();
-          if (e.key === 'ArrowLeft') prev.click();
-          if (e.key === 'Escape') close.click();
-        });
+    lightboxEl.addEventListener('click', function (e) {
+      e.preventDefault();
+      var target = e.target;
 
-        lightboxEl.addEventListener('click', function (e) {
-          e.preventDefault();
-          var target = e.target;
+      if (target === prev) {
+        if (i > 0) {
+          image.src = larges[i - 1];
+          i--;
+        } else {
+          image.src = larges[larges.length - 1];
+          i = larges.length - 1;
+        }
+      } else if (target === next) {
+        if (i < larges.length - 1) {
+          image.src = larges[i + 1];
+          i++;
+        } else {
+          image.src = larges[0];
+          i = 0;
+        }
+      }
 
-          if (target === prev) {
-            if (i > 0) {
-              image.src = larges[i - 1];
-              i--;
-            } else {
-              image.src = larges[larges.length - 1];
-              i = larges.length - 1;
-            }
-          } else if (target === next) {
-            if (i < larges.length - 1) {
-              image.src = larges[i + 1];
-              i++;
-            } else {
-              image.src = larges[0];
-              i = 0;
-            }
-          }
+      description.textContent = descriptions[i];
+      counter.textContent = 'Imagen ' + (i + 1) + ' de ' + larges.length;
+    });
+  };
 
-          description.textContent = descriptions[i];
-          counter.textContent = 'Imagen ' + (i + 1) + ' de ' + larges.length;
-        });
-      };
+  var lightbox = function lightbox(container) {
+    var images = getImages(container),
+        larges = getLargeImages(images),
+        descriptions = getDescriptions(images);
 
-      var lightbox = function lightbox(container) {
-        var images = _getImages(container),
-            larges = getLargeImages(images),
-            descriptions = getDescriptions(images);
+    OpenLightBoxEvent(container, images, larges, descriptions);
+  };
 
-        OpenLightBoxEvent(container, images, larges, descriptions);
-      };
-
-      lightbox(d.querySelector('.heroes-container'));
-    }
-  }, 2000);
+  lightbox(d.querySelector('.heroes-container'));
 };
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -143,6 +271,10 @@ exports.getConnection = undefined;
 var _md = require('md5');
 
 var _md2 = _interopRequireDefault(_md);
+
+var _gallery = require('./gallery');
+
+var _galleryPoo = require('./gallery-poo');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -164,12 +296,14 @@ var getConnection = exports.getConnection = function getConnection() {
     res.data.results.forEach(function (e) {
       drawHero(e);
     });
+    (0, _gallery.getImages)();
+    //const gallery = new Lightbox(document.querySelector('.heroes-container'))
   }).catch(function (err) {
     return console.log(err);
   });
 
   var drawHero = function drawHero(e) {
-    var image = e.thumbnail.path + '/portrait_uncanny.' + e.thumbnail.extension;
+    var image = e.thumbnail.path + '/portrait_incredible.' + e.thumbnail.extension;
 
     var hero = '\n      <div class="hero">\n        <h3 class="hero-name">' + e.name + '</h3>\n        <img class="hero-image" src="' + image + '" alt="' + e.name + '">\n        <p class="hero-description">' + e.description + '</p>\n      </div>\n    ';
 
@@ -177,7 +311,7 @@ var getConnection = exports.getConnection = function getConnection() {
   };
 };
 
-},{"md5":7}],4:[function(require,module,exports){
+},{"./gallery":3,"./gallery-poo":2,"md5":8}],5:[function(require,module,exports){
 var charenc = {
   // UTF-8 encoding
   utf8: {
@@ -212,7 +346,7 @@ var charenc = {
 
 module.exports = charenc;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 (function() {
   var base64map
       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/',
@@ -310,7 +444,7 @@ module.exports = charenc;
   module.exports = crypt;
 })();
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /*!
  * Determine if an object is a Buffer
  *
@@ -333,7 +467,7 @@ function isSlowBuffer (obj) {
   return typeof obj.readFloatLE === 'function' && typeof obj.slice === 'function' && isBuffer(obj.slice(0, 0))
 }
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 (function(){
   var crypt = require('crypt'),
       utf8 = require('charenc').utf8,
@@ -495,6 +629,6 @@ function isSlowBuffer (obj) {
 
 })();
 
-},{"charenc":4,"crypt":5,"is-buffer":6}]},{},[1]);
+},{"charenc":5,"crypt":6,"is-buffer":7}]},{},[1]);
 
 //# sourceMappingURL=scripts.js.map

@@ -18,6 +18,7 @@
 
     @include from($max-width) {
       margin: 0;
+      cursor: pointer;
 
       &:hover {
         .hero-description {
