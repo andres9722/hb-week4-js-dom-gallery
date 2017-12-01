@@ -1,3 +1,6 @@
+import { encode } from "punycode";
+import md5 from 'md5'
+
 export const getImages = () => {
   const d = document, c = console.log
   
@@ -59,7 +62,7 @@ export const getImages = () => {
         closeModal.addEventListener('click', e => {
           e.preventDefault()
           d.body.removeChild(modalEl)
-        })  
+        })
       }
 
       const navigateLightBox = (lightboxEl, i, larges, descriptions) => {
@@ -67,7 +70,14 @@ export const getImages = () => {
           next = lightboxEl.querySelector('.next'),
           image = lightboxEl.querySelector('img'),
           description = lightboxEl.querySelector('p'),
-          counter = lightboxEl.querySelector('span')
+          counter = lightboxEl.querySelector('span'),
+          close = lightboxEl.querySelector('.close-modal')
+
+        window.addEventListener('keyup', e => {
+          if(e.key === 'ArrowRight') next.click()
+          if(e.key === 'ArrowLeft') prev.click()
+          if(e.key === 'Escape') close.click()
+        })
 
         lightboxEl.addEventListener('click', e => {
           e.preventDefault()
@@ -107,5 +117,5 @@ export const getImages = () => {
 
       lightbox(d.querySelector('.heroes-container'))
     }
-  }, 1000)
+  }, 2000)
 }

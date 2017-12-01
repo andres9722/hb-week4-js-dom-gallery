@@ -8,9 +8,12 @@
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
-  background: rgba($black, .6);
+  height: 100vh;
+  background: rgba(black, .9);
   z-index: 20;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .lightbox-container {
@@ -26,7 +29,7 @@
 
 .next {
   position: absolute;
-  top: 30%;
+  top: 45%;
   right: -20px;
 
   &::after {
@@ -34,18 +37,18 @@
     position: absolute;
     top: 0;
     right: 0;
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     background: white;
     border-radius: 50%;
     z-index: 10;
-    border: 2px solid $black;
+    border: 1px solid $white;
   }
 }
 
 .prev {
   position: absolute;
-  top: 30%;
+  top: 45%;
   left: -20px;
   
     &::after {
@@ -53,12 +56,12 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 40px;
-      height: 40px;
+      width: 35px;
+      height: 35px;
       z-index: 10;
       background: white;
       border-radius: 50%;
-      border: 2px solid $black;
+      border: 1px solid $white;
     }
 }
 
@@ -70,8 +73,8 @@
       position: absolute;
       top: -20px;
       right: -20px;
-      width: 40px;
-      height: 40px;
+      width: 35px;
+      height: 35px;
       z-index: 10;
       border-radius: 50%;
       border: 2px solid $black;
